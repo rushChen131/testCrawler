@@ -13,12 +13,16 @@ import string, urllib2
 import re
 import random
 import os
+import connDB
 class copyPic:
     def __init__(self):
         self.flag = 0
         self.dirName = ''
         self.ranNum = 1000
-        self.path ='/opt/pic/'
+        # self.path ='/home/chen/pic/'
+        db = connDB.getDbConn();
+        self.path = str(db.doSelect("select config_value from t_system_config where config_key = 'localhost1'")[0]);
+        print self.path;
         self.i = 0
 
     def randomNum (self):
@@ -27,7 +31,7 @@ class copyPic:
 
 
     def start(self):
-        url = "http://desk.zol.com.cn/bizhi/7132_88317_2.html";
+        url = "http://desk.zol.com.cn/bizhi/1598_19625_2.html";
         while (url != ''):
             newUrl = self.saveFile(url,  self.i);
             self.i = self.i+1;
@@ -45,20 +49,21 @@ class copyPic:
             self.flag = 1
             self.ranNum = self.randomNum()
             dirNames = re.findall('<a id="titleName" href="(.*)">(.*)</a>', m)[0]
-            print '文件名：'+dirNames[1]
             self.dirName = dirNames[1]
-            hasDir = os.path.exists(self.path+self.dirName);
-            if(not hasDir):
-                os.mkdir(  self.path+self.dirName)
+            # hasDir = os.path.exists(self.path+self.dirName);
+            # if(not hasDir):
+            #     os.mkdir(  self.path+self.dirName)
         for y in range(len(myItems)):
             img = urllib2.urlopen(myItems[y]).read();
-            sName =   self.path+self.dirName+"/" + str(self.ranNum) + "_" + str(num) + '.jpg'  # 自动填充成六位的文件名
-            print '正在下载第' + str(num) + '个网页，并将其存储为' + sName + '......'
+            print img
+            sName =   self.path + str(self.ranNum) + "_" + str(num) + '.jpg'  # 自动填充成六位的文件名
             f = open(sName, 'w+')
             f.write(img)
             f.close()
+            connDB.getDbConn().doSql("insert into t_bizhi (user_name,path,html_url,pic_url) "
+                                        + "VALUES ('""" + str(self.dirName) +
+                                     """','""" + str(self.ranNum) + "_" + str(num) + '.jpg' + """','""" + url + """','""" + myItems[y] + """')""")
         match = '<a id="pageNext" class="next" href="(.*)" title="(.*)">';
-        print match
         next = re.findall(match, m)
         print next
         nextUrls = next[0]

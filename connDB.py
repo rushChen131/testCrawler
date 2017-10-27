@@ -5,28 +5,49 @@
 
 import pymysql
 class getDbConn:
+    def __init__(self):
+        self.host = 'localhost'
+        self.port = 3306
+        self.user = 'root'
+        self.passwd = '13122441'
+        self.db = 'test'
 
-    def doSql(sql):
+    def doSql(self,sql):
         try:
             conn = pymysql.connect(
-                host='localhost',
-                port=3306,
-                user='root',
-                passwd='13122441',
-                db='test',
+                host=self.host,
+                port=self.port,
+                user=self.user,
+                passwd=self.passwd,
+                db=self.db,
                 charset='utf8'
             )
             cur = conn.cursor();
             result = cur.execute(sql);
             print(result);
             conn.commit();
+        except(BaseException):
+            print "error:"+sql
+        finally:
+            conn.close();
+
+
+    def doSelect(self,sql):
+        try:
+            conn = pymysql.connect(
+                host=self.host,
+                port=self.port,
+                user=self.user,
+                passwd=self.passwd,
+                db=self.db,
+                charset='utf8'
+            )
+            cur = conn.cursor();
+            cur.execute(sql);
+            result = cur.fetchone();
+            print(result);
+            conn.commit();
         finally:
             conn.close();
         return result;
 
-
-
-db = getDbConn();
-
-
-db.doSql("insert into douyin (douyin_id) VALUES (23213)")
