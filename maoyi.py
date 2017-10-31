@@ -24,12 +24,12 @@ class copyPic:
         self.flag = 0
         self.dirName = ''
         self.ranNum = 1000
-        self.path ='/home/chen/sifang/'
+        self.path ='/home/chen/easyapi/'
         # db = connDB.getDbConn();
         # self.path = str(db.doSelect("select config_value from t_system_config where config_key = 'localhost2'")[0]);
         print self.path;
-        self.i = 1
-        self.page = 130500;
+        self.i = 0
+        self.page = 1;
 
     def randomNum (self):
         ranNum = random.randint(1, 200000)
@@ -37,24 +37,26 @@ class copyPic:
 
 
     def start(self):
-        while ( 1 >0):
-            url = "https://www.4493.com/xingganmote/" + str(self.page) + "/" + str(self.i) + ".htm";
-            print str(self.page)+".htm/"+str(self.i)
-            self.saveFile(url,  self.i);
-
+        y=189;
+        while ( y>0):
+            print y
+            url = "https://www.easyapi.com/s";
+            newUrl = self.saveFile(url,  self.i);
+            if(newUrl ==""):
+                return
+            self.i = self.i+1;
 
 
     def saveFile(self,url, num):
-        print url
         try:
             headers = {
                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
                        'Accept-Encoding': 'gzip, deflate, br',
                        'Accept-Language': 'zh-CN,zh;q=0.9',
                        'Connection': 'keep-alive',
-                       'Host': 'www.4493.com',
+                       'Host': 'www.easyapi.com',
                        'Cache-Control': 'max-age=0',
-                       'Cookie':'UM_distinctid=15f5c8467b56d2-0e8e72f4466875-102c1709-1fa400-15f5c8467b673b; CNZZDATA30040472=cnzz_eid%3D1679380792-1509084018-https%253A%252F%252Fwww.baidu.com%252F%26ntime%3D1509084018; CNZZDATA1257119591=1976078557-1509085055-https%253A%252F%252Fwww.baidu.com%252F%7C1509085055; Hm_lvt_65d17d8c0da1175e9c1d1e00ed413540=1509085703,1509091442; Hm_lpvt_65d17d8c0da1175e9c1d1e00ed413540=1509091444; CNZZDATA1257134914=2035089887-1509084345-https%253A%252F%252Fwww.4493.com%252F%7C1509084345',
+                       'Cookie':'Hm_lvt_07b306be81dcbc23fd29affebc7b173e=1509096673; Hm_lpvt_07b306be81dcbc23fd29affebc7b173e=1509096673; JSESSIONID=F3ADED175D57D14EBCD443F2A6866BDC',
                        'Upgrade-Insecure-Requests': '1',
                        "User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
             }
@@ -62,27 +64,14 @@ class copyPic:
             m = html.text;
         except urllib2.URLError, e:
             print e.reason
-        myItems = re.findall('<div class="picsbox picsboxcenter">(.*)</div>', m,re.S)  # <a href="(.*)">(.*)</a>
-        img = re.findall('<img(.*?) src=\"(.*)\" onload=(.*)>',m)
+        # myItems = re.findall('<div class="con_nofound">(.*)</div>', m,re.S)  # <a href="(.*)">(.*)</a>
+        img = re.findall('<p><img src="(.*)" title="(.*)" width="600"></p>',m)
+        self.ranNum = self.randomNum()
+        print img[0][0]
         localPath = self.path + str(self.ranNum) + "_" + str(num) + '.jpg';
         print localPath
-        urllib.urlretrieve(img[0][1], localPath)
-        nextUrls = re.findall('<div class="page">(.*)</div>',m,re.S);
-        aUrls = re.findall(r"(?<=href=\").+?(?=\")|(?<=href=\').+?(?=\')", nextUrls[0], re.I|re.S|re.M);#u'javascript:gotourl(\\'12.htm\\');'
-        nexUrl = ''
-        for s in range(len(aUrls)):
-            if (aUrls[s].find("javascript:gotourl") !=-1):
-                nexsUrl = aUrls[s]
-                print nexsUrl
-                prefix = nexsUrl.find("'");#u'javascript:gotourl(\\'12.htm\\');'
-                fix = nexsUrl.rfind("'");
-                nexUrl = nexsUrl[prefix+1:fix];
-        nexUrl = nexUrl[0:nexUrl.find(".")]
-        self.i = self.i + 1;
-        if(int(nexUrl) == num):
-            self.ranNum = self.randomNum()
-            self.i =1
-            self.page = self.page+1
+        urllib.urlretrieve(img[0][0], localPath)
+
 # 调用
 co = copyPic();
 co.start();

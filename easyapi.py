@@ -50,52 +50,26 @@ class copyPic:
         try:
             headers = {
                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                       'Accept-Encoding': 'gzip, deflate',
+                       'Accept-Encoding': 'gzip, deflate, br',
                        'Accept-Language': 'zh-CN,zh;q=0.9',
                        'Connection': 'keep-alive',
-                       'Host': 'jandan.net',
+                       'Host': 'www.easyapi.com',
                        'Cache-Control': 'max-age=0',
-                       'Cookie':'__cfduid=d11fe2c058f1d3df38b665933cab4d3f31509087660; _ga=GA1.2.1250263778.1509087661; _gid=GA1.2.214701713.1509087662',
+                       'Cookie':'Hm_lvt_07b306be81dcbc23fd29affebc7b173e=1509096673; Hm_lpvt_07b306be81dcbc23fd29affebc7b173e=1509096673; JSESSIONID=F3ADED175D57D14EBCD443F2A6866BDC',
                        'Upgrade-Insecure-Requests': '1',
-                       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
-                       "Referer":"http://jandan.net/ooxx/",
                        "User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"
             }
             html = requests.get(url, headers=headers, allow_redirects=False)
             m = html.text;
         except urllib2.URLError, e:
             print e.reason
-        myItems = re.findall('<div class="con_nofound">(.*)</div>', m,re.S)  # <a href="(.*)">(.*)</a>
-        img = re.findall('<img src="(.*)" title="欣赏美女" width="600">',myItems[0])
+        # myItems = re.findall('<div class="con_nofound">(.*)</div>', m,re.S)  # <a href="(.*)">(.*)</a>
+        img = re.findall('<p><img src="(.*)" title="(.*)" width="600"></p>',m)
         self.ranNum = self.randomNum()
-        for y in range(len(img)):
-            picUrls = "http:"+img[y]
-            print picUrls
-            localPath = self.path + str(self.ranNum) + "_" + str(y) + '.jpg';
-            print localPath
-            urllib.urlretrieve(picUrls, localPath)
-            # headers = {
-            #     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-            #     'Accept-Encoding': 'gzip, deflate',
-            #     'Accept-Language': 'zh-CN,zh;q=0.9',
-            #     'Connection': 'keep-alive',
-            #     'Host': 'ws1.sinaimg.cn',
-            #     'Cache-Control': 'max-age=0',
-            #     'Upgrade-Insecure-Requests': '1',
-            #     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36',
-            # }
-            #
-            # img = requests.get(picUrls, headers=headers, allow_redirects=False).text
-            # print img
-            # print self.path + str(self.ranNum) + "_" + str(num) + '.jpg'
-            # sName = self.path + str(self.ranNum) + "_" + str(num) + '.jpg'  # 自动填充成六位的文件名
-            # f = open(sName, 'w+')
-            # f.write(img)
-            # f.close()
-
-        # db = connDB.getDbConn();
-        # result = db.doSql("insert into douyin (douyin_id) VALUES ("+str(i)+")");
-
+        print img[0][0]
+        localPath = self.path + str(self.ranNum) + "_" + str(num) + '.jpg';
+        print localPath
+        urllib.urlretrieve(img[0][0], localPath)
 
 # 调用
 co = copyPic();

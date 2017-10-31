@@ -36,7 +36,7 @@ class copyPic:
 
 
     def start(self):
-        y=235;
+        y=188;
         while ( y>0):
             print y
             url = "http://jandan.net/ooxx/page-"+str(y)+"#comments";
