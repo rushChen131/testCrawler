@@ -9,7 +9,6 @@
 #   功能：下载对应页码内的所有页面并存储为html文件。
 # ---------------------------------------
 
-import string, urllib2,connDB
 import re
 
 import requests

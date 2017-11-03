@@ -9,11 +9,12 @@
 #   功能：下载对应页码内的所有页面并存储为html文件。
 # ---------------------------------------
 import random
-import string, urllib2
 import re
-import random
-import os
-import connDB
+import urllib2
+
+from com.chen.dao import connDB
+
+
 class copyPic:
     def __init__(self):
         self.flag = 0
@@ -31,7 +32,7 @@ class copyPic:
 
 
     def start(self):
-        url = "http://desk.zol.com.cn/bizhi/1598_19625_2.html";
+        url = "http://desk.zol.com.cn/bizhi/2879_36872_2.html";
         while (url != ''):
             newUrl = self.saveFile(url,  self.i);
             self.i = self.i+1;
@@ -44,7 +45,6 @@ class copyPic:
             return ''
         print '图片url:'+url
         myItems = re.findall('<img id="bigImg" src="(.*)" width="960" height="600">', m)  # <a href="(.*)">(.*)</a>
-        print myItems
         if (self.flag == 0):
             self.flag = 1
             self.ranNum = self.randomNum()
@@ -55,24 +55,20 @@ class copyPic:
             #     os.mkdir(  self.path+self.dirName)
         for y in range(len(myItems)):
             img = urllib2.urlopen(myItems[y]).read();
-            print img
             sName =   self.path + str(self.ranNum) + "_" + str(num) + '.jpg'  # 自动填充成六位的文件名
             f = open(sName, 'w+')
             f.write(img)
             f.close()
             connDB.getDbConn().doSql("insert into t_bizhi (user_name,path,html_url,pic_url) "
-                                        + "VALUES ('""" + str(self.dirName) +
+                                     + "VALUES ('""" + str(self.dirName) +
                                      """','""" + str(self.ranNum) + "_" + str(num) + '.jpg' + """','""" + url + """','""" + myItems[y] + """')""")
         match = '<a id="pageNext" class="next" href="(.*)" title="(.*)">';
         next = re.findall(match, m)
-        print next
         nextUrls = next[0]
-        print "nextUrls[0]"+nextUrls[0]
         nextUrl = nextUrls[0]
         hasNext = cmp(nextUrl,"javascript:;")
         if (hasNext != -1):
             div = re.findall('<a href="(.*)" class="txt">',m)
-            print div
             nextUrl = div[1]
             self.flag = 0
             self.i = 0

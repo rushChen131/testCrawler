@@ -23,13 +23,13 @@ class copyPic:
     def __init__(self):
         self.flag = 0
         self.dirName = ''
-        self.ranNum = 1000
-        self.path ='/home/chen/sifang/'
+        self.ranNum = self.randomNum()
+        self.path ='/home/chen/sifang2/'
         # db = connDB.getDbConn();
         # self.path = str(db.doSelect("select config_value from t_system_config where config_key = 'localhost2'")[0]);
         print self.path;
         self.i = 1
-        self.page = 130500;
+        self.page = 3
 
     def randomNum (self):
         ranNum = random.randint(1, 200000)
@@ -60,29 +60,41 @@ class copyPic:
             }
             html = requests.get(url, headers=headers, allow_redirects=False)
             m = html.text;
-        except urllib2.URLError, e:
-            print e.reason
-        myItems = re.findall('<div class="picsbox picsboxcenter">(.*)</div>', m,re.S)  # <a href="(.*)">(.*)</a>
-        img = re.findall('<img(.*?) src=\"(.*)\" onload=(.*)>',m)
-        localPath = self.path + str(self.ranNum) + "_" + str(num) + '.jpg';
-        print localPath
-        urllib.urlretrieve(img[0][1], localPath)
-        nextUrls = re.findall('<div class="page">(.*)</div>',m,re.S);
-        aUrls = re.findall(r"(?<=href=\").+?(?=\")|(?<=href=\').+?(?=\')", nextUrls[0], re.I|re.S|re.M);#u'javascript:gotourl(\\'12.htm\\');'
-        nexUrl = ''
-        for s in range(len(aUrls)):
-            if (aUrls[s].find("javascript:gotourl") !=-1):
-                nexsUrl = aUrls[s]
-                print nexsUrl
-                prefix = nexsUrl.find("'");#u'javascript:gotourl(\\'12.htm\\');'
-                fix = nexsUrl.rfind("'");
-                nexUrl = nexsUrl[prefix+1:fix];
-        nexUrl = nexUrl[0:nexUrl.find(".")]
-        self.i = self.i + 1;
-        if(int(nexUrl) == num):
+            headTitle = re.findall('<div class="breadnav">(.*)<\/div>',m);
+            htmlTitle = re.findall('<a href="(.*)">(.*)<\/a>',headTitle[0])
+            print htmlTitle
+            if (htmlTitle[0][1].find("美女") == -1 or htmlTitle[0][1].find("美女明星") != -1 or htmlTitle[0][1].find("体育美女") != -1 or htmlTitle[0][1].find("动漫美女") != -1or htmlTitle[0][1].find("动漫美女") != -1or htmlTitle[0][1].find("模特美女") != -1):
+                self.ranNum = self.randomNum()
+                self.i = 1
+                self.page = self.page + 1
+                return
+            print htmlTitle[0][1]
+            myItems = re.findall('<div class="picsbox picsboxcenter">(.*)</div>', m,re.S)  # <a href="(.*)">(.*)</a>
+            img = re.findall('<img(.*?) src=\"(.*)\" onload=(.*)>',m)
+            localPath = self.path + str(self.ranNum) + "_" + str(num) + '.jpg';
+            print localPath
+            urllib.urlretrieve(img[0][1], localPath)
+            nextUrls = re.findall('<div class="page">(.*)</div>',m,re.S);
+            aUrls = re.findall(r"(?<=href=\").+?(?=\")|(?<=href=\').+?(?=\')", nextUrls[0], re.I|re.S|re.M);#u'javascript:gotourl(\\'12.htm\\');'
+            nexUrl = ''
+            for s in range(len(aUrls)):
+                if (aUrls[s].find("javascript:gotourl") !=-1):
+                    nexsUrl = aUrls[s]
+                    print nexsUrl
+                    prefix = nexsUrl.find("'");#u'javascript:gotourl(\\'12.htm\\');'
+                    fix = nexsUrl.rfind("'");
+                    nexUrl = nexsUrl[prefix+1:fix];
+            nexUrl = nexUrl[0:nexUrl.find(".")]
+            self.i = self.i + 1;
+            if(int(nexUrl) == num):
+                self.ranNum = self.randomNum()
+                self.i =1
+                self.page = self.page+1
+        except BaseException, e:
             self.ranNum = self.randomNum()
-            self.i =1
-            self.page = self.page+1
+            self.i = 1
+            self.page = self.page + 1
+            return
 # 调用
 co = copyPic();
 co.start();
