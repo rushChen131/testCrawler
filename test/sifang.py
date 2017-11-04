@@ -24,12 +24,12 @@ class copyPic:
         self.flag = 0
         self.dirName = ''
         self.ranNum = self.randomNum()
-        self.path ='/home/chen/sifang2/'
+        self.path ='/home/chen/sifang/'
         # db = connDB.getDbConn();
         # self.path = str(db.doSelect("select config_value from t_system_config where config_key = 'localhost2'")[0]);
         print self.path;
         self.i = 1
-        self.page = 3
+        self.page = 9
 
     def randomNum (self):
         ranNum = random.randint(1, 200000)
@@ -63,12 +63,19 @@ class copyPic:
             headTitle = re.findall('<div class="breadnav">(.*)<\/div>',m);
             htmlTitle = re.findall('<a href="(.*)">(.*)<\/a>',headTitle[0])
             print htmlTitle
-            if (htmlTitle[0][1].find("美女") == -1 or htmlTitle[0][1].find("美女明星") != -1 or htmlTitle[0][1].find("体育美女") != -1 or htmlTitle[0][1].find("动漫美女") != -1or htmlTitle[0][1].find("动漫美女") != -1or htmlTitle[0][1].find("模特美女") != -1):
+            if (htmlTitle[0][1].find("性感美女") == -1 and  htmlTitle[0][1].find("唯美写真") == -1 and htmlTitle[0][1].find("丝袜美腿") == -1):
                 self.ranNum = self.randomNum()
                 self.i = 1
                 self.page = self.page + 1
                 return
             print htmlTitle[0][1]
+            if (htmlTitle[0][1].find("性感美女") != -1):
+                self.path = "/home/chen/sifang/xinggan/"
+            else:
+                if(htmlTitle[0][1].find("唯美写真") != -1):
+                    self.path = "/home/chen/sifang/weimei/";
+                else:
+                    self.path= "/home/chen/sifang/siwa/"
             myItems = re.findall('<div class="picsbox picsboxcenter">(.*)</div>', m,re.S)  # <a href="(.*)">(.*)</a>
             img = re.findall('<img(.*?) src=\"(.*)\" onload=(.*)>',m)
             localPath = self.path + str(self.ranNum) + "_" + str(num) + '.jpg';
