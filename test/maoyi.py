@@ -40,7 +40,7 @@ class copyPic:
         y=189;
         while ( y>0):
             print y
-            url = "https://www.easyapi.com/s";
+            url = "https://s.taobao.com/search?q=%E6%AF%9B%E8%A1%A3&sort=sale-desc";
             newUrl = self.saveFile(url,  self.i);
             if(newUrl ==""):
                 return

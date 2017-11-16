@@ -9,7 +9,8 @@
 #   功能：下载对应页码内的所有页面并存储为html文件。
 # ---------------------------------------
 import random
-import string, urllib2
+import string
+import urllib2
 import re
 import random
 import os
@@ -29,7 +30,7 @@ class copyPic:
         # self.path = str(db.doSelect("select config_value from t_system_config where config_key = 'localhost2'")[0]);
         print self.path;
         self.i = 1
-        self.page = 9
+        self.page = 9387
 
     def randomNum (self):
         ranNum = random.randint(1, 200000)

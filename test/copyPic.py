@@ -12,7 +12,7 @@ import random
 import re
 import urllib2
 
-from com.chen.dao import connDB
+from com.chen import connDB
 
 
 class copyPic:
