@@ -24,7 +24,7 @@ class getDbConn:
             )
             cur = conn.cursor();
             result = cur.execute(sql);
-            print(result);
+            # print(result);
             conn.commit();
         except(BaseException):
             print "error:"+sql
